@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  ts_automation:
+    build: .
+    container_name: pps_order_delivery_script
+    restart: always
+    env_file:
+      - .env
+    volumes:
+      - ./logs:/app/logs
+    shm_size: "2gb"
