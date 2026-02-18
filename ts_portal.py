@@ -30,26 +30,22 @@ class TS:
         
         logger.info("Initializing Firefox driver") 
         options = Options() 
-        options.add_argument("-private")
-        options.binary_location = "/Applications/Firefox.app/Contents/MacOS/firefox"
-        self.driver = webdriver.Firefox(options=options) 
-        self.wait = WebDriverWait(self.driver, 20)
-        # options.add_argument("--headless")              # REQUIRED in Docker
-        # options.add_argument("--private")
-        # options.add_argument("--width=1920")
-        # options.add_argument("--height=1080")
-        # options.add_argument("--no-sandbox")
-        # options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--headless")              # REQUIRED in Docker
+        options.add_argument("--private")
+        options.add_argument("--width=1920")
+        options.add_argument("--height=1080")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
 
-        # options.set_preference("browser.cache.disk.enable", False)
-        # options.set_preference("browser.cache.memory.enable", False)
-        # options.set_preference("browser.cache.offline.enable", False)
-        # options.set_preference("network.http.use-cache", False)
+        options.set_preference("browser.cache.disk.enable", False)
+        options.set_preference("browser.cache.memory.enable", False)
+        options.set_preference("browser.cache.offline.enable", False)
+        options.set_preference("network.http.use-cache", False)
 
-        # service = Service(log_path="/tmp/geckodriver.log")
+        service = Service(log_path="/tmp/geckodriver.log")
 
 
-        # self.driver = webdriver.Firefox(options=options,service=service)
+        self.driver = webdriver.Firefox(options=options,service=service)
         self.wait = WebDriverWait(self.driver, 20)
 
         self.login_url = PORTAL_LOGIN_URL
