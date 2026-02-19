@@ -61,10 +61,28 @@ if __name__ == "__main__":
                     order_unit.append(key)
                     order_unit.append((o["county"], o["state"]))
 
-                    if o["new_pps_recordings_found"] == "No":
-                        order_unit.append("No New documents have been found.")
+                    if o["product"] == "Prior Policy Search":
+                        if not o["note_type"]:
+                            if o["new_pps_recordings_found"] == "No":
+                                order_unit.append(
+                                    "We only found 2 expected new documents: a release of the prior subject mortgage and a new Rocket mortgage."
+                                )
+                            else:
+                                order_unit.append("*New recordings found, please see attached.")
+                        else:
+                            if o["note_type"] == "No New Docs":
+                                order_unit.append("No New documents have been found.")
+                            elif o["note_type"] == "Expected Docs":
+                                order_unit.append(
+                                    "We only found 2 expected new documents: a release of the prior subject mortgage and a new Rocket mortgage."
+                                )
+                            else:
+                                order_unit.append("*New recordings found, please see attached.")
                     else:
-                        order_unit.append("*New recordings found, please see attached.")
+                        if o["new_pps_recordings_found"] == "No":
+                            order_unit.append("No New documents have been found.")
+                        else:
+                            order_unit.append("*New recordings found, please see attached.")
 
                     try:
                         orders[o["ts_identifier"].replace(" ", "").lower()].append(order_unit)
