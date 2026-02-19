@@ -193,7 +193,7 @@ class TS:
         try:
             date_value = order[3]
 
-            search_pd = WebDriverWait(d, 20).until(
+            search_pd = WebDriverWait(d, 30).until(
                 EC.presence_of_element_located(
                     (By.ID, "ctl00_ContentPlaceHolder1_dateSearchPeriodStart_txtDate")
                 )
@@ -204,6 +204,9 @@ class TS:
                 arguments[0].dispatchEvent(new Event('change'));
                 arguments[0].dispatchEvent(new Event('blur'));
             """, search_pd, date_value)
+
+            filled_psd = search_pd.get_attribute("value")
+            logger.info(f"Period Search Start Date field value after fill: {filled_psd}")
 
             time.sleep(1)
 
@@ -222,6 +225,9 @@ class TS:
                         (By.ID, "ctl00_ContentPlaceHolder1_rblNameInTitle_0")
                     )
                 ).click()
+                filled_effective = effective_Date_textbx.get_attribute("value")
+                logger.info(f"Effective Date field value after fill: {filled_effective}")
+
             else:
                 print("effective date is wrong")
                 url = "https://api.trumpyts.com/api/orders/{}/".format(order[7])
@@ -232,7 +238,7 @@ class TS:
                                 }
                 requests.patch(url, data=json.dumps(data), headers=headers)
                 print("order moved to examine")
-                return
+                return False
                     
             
             
@@ -309,9 +315,14 @@ class TS:
             note.clear()
             note.send_keys(order[9])
 
+            filled_notes = note.get_attribute("value")
+            logger.info(f"Vendor Notes field value after fill: {filled_notes}")
+            return True
+
         except Exception:
-            self.ts.quite()
             logger.exception(f"Error filling order #{order[0]}")
+            raise
+
 
     # ==============================
     # COMPLETE ORDER
@@ -445,7 +456,12 @@ class TS:
                         if chunk:
                             f.write(chunk)
 
-            self.fill_order(order, file_path)
+            
+
+            fill_result = self.fill_order(order, file_path)
+            if fill_result is False:
+                self.remove_pdf(file_path)
+                return 
             self.complete_order(order)
             self.remove_pdf(file_path)
 
