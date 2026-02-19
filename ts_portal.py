@@ -68,6 +68,7 @@ class TS:
         self.wait.until(
             EC.presence_of_element_located((By.NAME, "password"))
         ).send_keys(self.password)
+        logger.info("Entering username and password")
 
         safe_click(d, By.NAME, "action")
 
@@ -75,10 +76,11 @@ class TS:
             code = pyotp.TOTP(mfa_secret).now()
             self.wait.until(EC.presence_of_element_located((By.NAME, "code"))).send_keys(code)
             safe_click(d, By.NAME, "action")
-
+        
+        logger.info("Login submitted, waiting for dashboard")
         safe_click(self.driver, By.CSS_SELECTOR, 'a[href="Abstractor/Queue.aspx"]')
 
-        self.abstract_button = WebDriverWait(self.driver, 10).until(
+        self.abstract_button = WebDriverWait(self.driver, 30).until(
             lambda d: d.find_element(By.XPATH, '//input[@type="search"]')
         )
 
