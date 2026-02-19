@@ -420,11 +420,12 @@ class TS:
             print("order moved to sent")
 
             logger.info("Order completed successfully")
+            return True
 
         except Exception:
-            # self.logger.exception("Error inside complete_order")
-            d.save_screenshot("/ap/logs/complete_order_error.png")
-            raise
+            logger.exception(f"Error completing order #{order[0]}")
+            return False
+        
 
 
     # ==============================
@@ -457,12 +458,12 @@ class TS:
                             f.write(chunk)
 
             
-
-            fill_result = self.fill_order(order, file_path)
-            if fill_result is False:
+            if not self.fill_order(order, file_path):
                 self.remove_pdf(file_path)
                 return 
-            self.complete_order(order)
+            
+            if not self.complete_order(order):
+                return
             self.remove_pdf(file_path)
 
         except Exception:
